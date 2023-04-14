@@ -15,6 +15,14 @@ card_1_image = pygame.image.load(".\images\A of Spade.png")
 card_2_image = pygame.image.load(".\images\A of Heart.png")
 card_3_image = pygame.image.load(".\images\A of Club.png")
 card_4_image = pygame.image.load(".\images\A of Diamond.png")
+image1_width, image1_height = card_1_image.get_size()
+image2_width, image2_height = card_2_image.get_size()
+image3_width, image3_height = card_3_image.get_size()
+image4_width, image4_height = card_4_image.get_size()
+card_1_image = pygame.transform.scale(card_1_image, (image1_width // 6, image1_height // 6))
+card_2_image = pygame.transform.scale(card_2_image, (image2_width // 6, image2_height // 6))
+card_3_image = pygame.transform.scale(card_3_image, (image3_width // 6, image3_height // 6))
+card_4_image = pygame.transform.scale(card_4_image, (image4_width // 6, image4_height // 6))
 
 # Position and size of spirites
 CARD_WIDTH = 100
@@ -24,7 +32,7 @@ CARD_PADDING = 20
 # Original position
 # CARD_X = SCREEN_WIDTH / 2 - CARD_WIDTH / 2
 # CARD_Y = SCREEN_HEIGHT / 2 - CARD_HEIGHT / 2
-CARD_X = 50
+CARD_X = 20
 CARD_Y = 50
 
 # Game loop
