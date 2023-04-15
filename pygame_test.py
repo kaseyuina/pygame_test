@@ -16,28 +16,20 @@ image_directory = "images"
 image_size = (140, 200)
 images = {}
 
+x = 20
+y = 50
+
 for filename in os.listdir(image_directory):
     if filename.endswith(".png"):
         path = os.path.join(image_directory, filename)
         image = pygame.image.load(path)
-        print(image.get_size())
         image = pygame.transform.scale(image, image_size)
-        images[filename] = image
-        print(images)
-
-# # Reading image file
-# card_1_image = pygame.image.load(".\images\A of Spade.png")
-# card_2_image = pygame.image.load(".\images\A of Heart.png")
-# card_3_image = pygame.image.load(".\images\A of Club.png")
-# card_4_image = pygame.image.load(".\images\A of Diamond.png")
-# image1_width, image1_height = card_1_image.get_size()
-# image2_width, image2_height = card_2_image.get_size()
-# image3_width, image3_height = card_3_image.get_size()
-# image4_width, image4_height = card_4_image.get_size()
-# card_1_image = pygame.transform.scale(card_1_image, (image1_width // 6, image1_height // 6))
-# card_2_image = pygame.transform.scale(card_2_image, (image2_width // 6, image2_height // 6))
-# card_3_image = pygame.transform.scale(card_3_image, (image3_width // 6, image3_height // 6))
-# card_4_image = pygame.transform.scale(card_4_image, (image4_width // 6, image4_height // 6))
+        x += image_size[0] + 10
+        if x > SCREEN_WIDTH:
+            x = 50
+            y += image_size[1] + 10
+        # images[filename] = image
+        images[image] = (x, y)
 
 # Position and size of spirites
 CARD_WIDTH = 100
@@ -50,24 +42,40 @@ CARD_PADDING = 20
 CARD_X = 20
 CARD_Y = 50
 
+selected_image = None
+
 # Game loop
 running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            # マウスがクリックされたら、どの画像が選択されたかを判定する
+            x, y = event.pos
+            for image, position in images.items():
+                image_width, image_height = image.get_size()
+                rect = pygame.Rect(position[0], position[1], image_width, image_height)
+                if rect.collidepoint(x, y):
+                    selected_image = image
+                    break
+        elif event.type == pygame.MOUSEBUTTONUP:
+            # マウスが離されたら、選択された画像の位置を更新する
+            if selected_image:
+                x, y = event.pos
+                images[selected_image] = (x, y)
+                selected_image = None
+        elif event.type == pygame.MOUSEMOTION:
+            # マウスがドラッグされているとき、選択された画像を移動する
+            if selected_image:
+                x, y = event.pos
+                images[selected_image] = (x, y)
 
     # Displaying background
     screen.fill((0, 128, 0))
 
-    x = 20
-    y = 50
-    for filename, image in images.items():
-        screen.blit(image, (x, y))
-        x += image_size[0] + 10
-        if x > SCREEN_WIDTH:
-            x = 50
-            y += image_size[1] + 10
+    for image, position in images.items():
+        screen.blit(image, position)
 
     # # Displaying spirites
     # screen.blit(card_1_image, (CARD_X + CARD_WIDTH + CARD_PADDING, CARD_Y))
