@@ -43,6 +43,10 @@ CARD_X = 20
 CARD_Y = 50
 
 selected_image = None
+clicked_x = 0
+clicked_y = 0
+image_x = 0
+image_y = 0
 
 # Game loop
 running = True
@@ -51,25 +55,29 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            # マウスがクリックされたら、どの画像が選択されたかを判定する
+            # When the mouse is clicked, it recognizes which image is clicked
             x, y = event.pos
             for image, position in images.items():
                 image_width, image_height = image.get_size()
                 rect = pygame.Rect(position[0], position[1], image_width, image_height)
+                image_x = position[0]
+                image_y = position[1]
                 if rect.collidepoint(x, y):
+                    clicked_x, clicked_y = pygame.mouse.get_pos()
                     selected_image = image
                     break
         elif event.type == pygame.MOUSEBUTTONUP:
-            # マウスが離されたら、選択された画像の位置を更新する
+            # When mouse is left, selected image position is updated
             if selected_image:
                 x, y = event.pos
-                images[selected_image] = (x, y)
+                # images[selected_image] = (x - clicked_x, y - clicked_y)
+                images[selected_image] = (x - clicked_x + image_x, y - clicked_y + image_y)
                 selected_image = None
         elif event.type == pygame.MOUSEMOTION:
-            # マウスがドラッグされているとき、選択された画像を移動する
+            # When the mouse is moved, it moves the selected image
             if selected_image:
                 x, y = event.pos
-                images[selected_image] = (x, y)
+                images[selected_image] = (x - clicked_x + image_x, y - clicked_y + image_y)
 
     # Displaying background
     screen.fill((0, 128, 0))
